@@ -1,5 +1,7 @@
 # Backtest Audit — Review
 
+![alt text](prices.png)
+
 ## Recommendation
 
 **Do not go live.** The reported 6.14 Sharpe and 9035% return are driven by statistical errors that leak future information into the signal. While a corrected variant using time-of-day normalization achieves a +5.39 out-of-sample Sharpe (+94 EUR/MWh), this is based on only 125 trades across a single 30-day test window without exogenous market predictors. This is insufficient statistical evidence to directly allocate capital.
@@ -202,3 +204,7 @@ However:
 Tracking how far the price sits from its local average is a reasonable starting point, but the backtest has multiple sources of future data leaking into the signal. The two biggest are the centered rolling window (which uses prices two hours into the future) and the missing execution lag (which lets the strategy trade into the bar that triggered its own signal).
 
 A corrected version using mean-reversion logic and time-of-day normalisation shows a positive out-of-sample result, but 30 days is not enough to deploy capital. Paper-trade the corrected strategy for at least 3 months before considering live allocation.
+
+**Weekday vs. Weekend Structure**
+![alt text](image-2.png)
+EDA shows that Saturday and Sunday median prices drop by ~€8/MWh compared to weekdays. Even with time-of-day normalization (Step 9), pooling 14 calendar days across weekends means Monday morning z-scores because of low weekend averages.
