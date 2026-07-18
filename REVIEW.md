@@ -4,7 +4,7 @@
 
 ## Recommendation
 
-**Do not go live.** The reported 6.14 Sharpe and 9035% return are driven by statistical errors that leak future information into the signal. While a corrected variant using time-of-day normalization achieves a +5.39 out-of-sample Sharpe (+94 EUR/MWh), this is based on only 125 trades across a single 30-day test window without exogenous market predictors. This is insufficient statistical evidence to directly allocate capital.
+**Do not go live.** The reported 6.14 Sharpe and 9035% return are driven by statistical errors that leak future information into the signal. While a corrected variant using time-of-day normalization achieves a +5.39 out-of-sample Sharpe (+94 EUR/MWh), this is based on only 125 trades across a single 30-day test window without exogenous data. This is insufficient statistical evidence to directly allocate capital.
 
 ---
 
@@ -74,7 +74,7 @@ Step 3 -> Step 4: Sharpe 0.16 -> 0.00, return +27% -> 0.0%, switches 236 -> 0
 
 ---
 
-### Methodological: Buy High, Sell Low
+### Major: Buy High, Sell Low
 
 ![alt text](image-1.png)
 
@@ -86,7 +86,7 @@ The strategy goes long when $z > \theta$ (price well above its local average) an
 
 ---
 
-### Methodological: Wrong Annualisation
+### Major: Wrong Annualisation
 
 `annualized_sharpe`, line 64.
 
@@ -96,7 +96,7 @@ Using $\sqrt{252} \approx 15.9$ understates the annualised Sharpe by a factor of
 
 ---
 
-### Methodological: Percentage Returns on Power Prices
+### Major: Percentage Returns on Power Prices
 
 
 `run_backtest`, line 53.
@@ -113,7 +113,17 @@ Step 6 -> Step 7: Sharpe 0.00 -> 1.47, return 0.0% -> +2.6 EUR, switches 0 -> 6
 
 ---
 
-### Minor: Global Normalisation Leakage
+### Minor: Additive vs. Compound Equity Math
+
+`run_backtest`, line 56.
+
+`1.0 + strat_ret.cumsum()` computes cumulative percentage growth additively (`+9036%`) rather than multiplicatively `(1 + strat_ret).cumprod()`.
+
+**Fix**: For percentage returns, use `(1 + strat_ret).cumprod()`. For physical cash PnL (`price.diff()`), use `strat_ret.cumsum()`.
+
+---
+
+### Minor: Global Normalisation
 
 `build_features`, line 37.
 
