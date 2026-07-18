@@ -61,7 +61,6 @@ def build_features(df, window=WINDOW, normalize_by_time_of_day=True):
 
 
 def make_positions(df, threshold):
-    # Step 12: In-place mutation protection
     df = df.copy()
     
     # Step 6: Buy high, sell low / selection bias (short when strongly above average, long when below)
@@ -118,7 +117,6 @@ def main():
     bt = run_backtest(make_positions(test, theta))
 
     total_pnl = bt["cum_net_pnl"].iloc[-1]
-    # Entry fees: include all data points where capital or turnover costs are active
     active = bt.loc[(bt["position"].shift(1) != 0) | (bt["turnover"] > 0), "net_pnl"]
     hit_rate = (active > 0).mean() if len(active) > 0 else 0.0
     switches = int((bt["position"].diff().abs() > 0).sum())
