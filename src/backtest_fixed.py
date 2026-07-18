@@ -17,8 +17,8 @@ Step 7: Wrong annualization (15-minute intervals: sqrt(35040))
 Step 8: Absolute cash PnL (`diff()` in EUR/MWh instead of `pct_change()` on zero/negative prices)
 
 Smaller mistakes:
-Step 9: Data leakage (local rolling z-score without global 90-day mean/std re-standardization)
-Step 10: Intraday dynamics (rolling sub-hourly volatility estimation with time-of-day interval normalization)
+Step 9: Data leakage (local rolling z-score without global mean/std re-standardization)
+Step 10: Intraday dynamics (Time-of-day interval normalization)
 Step 11: Additive vs compound equity math (exact cumulative PnL without percentage distortion)
 Step 12: In-place mutation (strictly uses `.copy()` to avoid input data corruption)
 """
@@ -32,7 +32,7 @@ WINDOW = 16  # 16 × 15 min = 4 h local-average window/ 2*center=True
 YEARLY_OBS = 4 * 24 * 365
 SCALING_ENERGY = np.sqrt(YEARLY_OBS)
 SCALING_STOCKS = np.sqrt(252) # convention as in equity markets
-COST = 0.2 # EUR/MWh combined spread
+COST = 0.2 # EUR/MWh transaction cost
 TRAIN_SPLIT = 60 * 96
 THRESHOLDS = np.arange(0.2, 2.6, 0.1)
 
@@ -51,11 +51,11 @@ def build_features(df, window=WINDOW, normalize_by_time_of_day=True):
         df["ma"] = df.groupby("time_group")["price"].transform(lambda x: x.rolling(14, min_periods=7).mean())
         df["sd"] = df.groupby("time_group")["price"].transform(lambda x: x.rolling(14, min_periods=7).std())
     else:
-        # Step 1: Look-ahead bias #1 (causal rolling window)
+        # Step 1: Look-ahead bias #1 (rolling window)
         df["ma"] = df["price"].rolling(window, center=False, min_periods=window).mean()
         df["sd"] = df["price"].rolling(window, center=False, min_periods=window).std()
     
-    # Step 9: Data leakage (local z-score without global re-standardization)
+    # Step 9: Data leakage (local z-score without global standardization)
     df["z"] = (df["price"] - df["ma"]) / df["sd"]
     return df
 
@@ -71,7 +71,6 @@ def make_positions(df, threshold):
 
 
 def run_backtest(df, cost=COST):
-    # Step 12: In-place mutation protection
     df = df.copy()
     
     # Step 8: Absolute cash PnL (physical returns in EUR/MWh instead of pct_change)
@@ -90,7 +89,7 @@ def run_backtest(df, cost=COST):
 
 
 def calc_sharpe(returns):
-    # Step 7: Wrong annualization (continuous 24/7 15-min intervals: sqrt(35040))
+    # Step 7: Wrong annualization (24/7 15-min intervals: sqrt(35040))
     r = returns.dropna()
     if len(r) < 2 or r.std() == 0:
         return 0.0
