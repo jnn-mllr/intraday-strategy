@@ -203,7 +203,7 @@ However:
 
 Tracking how far the price sits from its local average is a reasonable starting point, but the backtest has multiple sources of future data leaking into the signal. The two biggest are the centered rolling window (which uses prices two hours into the future) and the missing execution lag (which lets the strategy trade into the bar that triggered its own signal).
 
-A corrected version using mean-reversion logic and time-of-day normalisation shows a positive out-of-sample result, but 30 days is not enough to deploy capital. Paper-trade the corrected strategy for at least 3 months before considering live allocation.
+A corrected version using mean-reversion logic and time-of-day normalisation shows a positive out-of-sample result, but 30 days is not enough to deploy capital. Paper trade the corrected strategy for at least some time before considering live allocation.
 
 **Weekday vs. Weekend Structure**
 ![alt text](image-2.png)
