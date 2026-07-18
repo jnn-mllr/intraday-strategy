@@ -21,7 +21,7 @@
 **Impact**: This changes the optimal threshold from 0.40 to 1.00, but the Sharpe stays at 7.13 as this is only the first fix.
 
 ```
-Step 0 -> Step 1: Sharpe 6.14 -> 7.13, switches 3822 -> 2306
+Step 0 -> Step 1: Sharpe 6.14 -> 7.13, return +9036% -> +8697%, switches 3822 -> 2306
 ```
 
 ---
@@ -37,7 +37,7 @@ Step 0 -> Step 1: Sharpe 6.14 -> 7.13, switches 3822 -> 2306
 **Impact**: This is the largest contributor to the inflated performance. Once the position is lagged by one bar, the Sharpe drops from 7.13 to 0.23. 
 
 ```
-Step 1 -> Step 2: Sharpe 7.13 -> 0.23, return 8697% -> 115%, switches 2306 -> 704
+Step 1 -> Step 2: Sharpe 7.13 -> 0.23, return +8697% -> +115%, switches 2306 -> 704
 ```
 
 ---
@@ -53,7 +53,7 @@ The code tests 24 threshold values over the entire 90-day sample and reports the
 **Impact**: Out-of-sample Sharpe drops further to 0.16 on +26.8% return with 236 switches.
 
 ```
-Step 2 -> Step 3: Sharpe 0.23 -> 0.16, return 115% -> 27%, switches 704 -> 236
+Step 2 -> Step 3: Sharpe 0.23 -> 0.16, return +115% -> +27%, switches 704 -> 236
 ```
 
 ---
@@ -69,7 +69,7 @@ Missing from `run_backtest`.
 **Impact**: With €0.20/MWh costs, the grid search finds no threshold that generates positive Sharpe.
 
 ```
-Step 3 -> Step 4: Sharpe 0.16 -> 0.00, switches 236 -> 0
+Step 3 -> Step 4: Sharpe 0.16 -> 0.00, return +27% -> 0.0%, switches 236 -> 0
 ```
 
 ---
@@ -134,7 +134,7 @@ A continuous 4-hour rolling window at 10AM averages prices from 6AM - 10AM. Thos
 **Impact**: With time-of-day normalization, the corrected strategy finds a positive out-of-sample edge.
 
 ```
-Step 8 -> Step 9: Sharpe −3.67 -> 5.39, PnL −107.5 -> +94.1 EUR, switches 591 -> 125
+Step 8 -> Step 9: Sharpe −3.67 -> 5.39, return −107.5 -> +94.1 EUR, switches 591 -> 125
 ```
 
 ---
