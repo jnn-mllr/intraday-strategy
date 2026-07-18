@@ -207,4 +207,4 @@ A corrected version using mean-reversion logic and time-of-day normalisation sho
 
 **Weekday vs. Weekend Structure**
 ![alt text](image-2.png)
-EDA shows that Saturday and Sunday median prices drop by ~€8/MWh compared to weekdays. Even with time-of-day normalization (Step 9), pooling 14 calendar days across weekends means Monday morning z-scores because of low weekend averages.
+EDA shows that Saturday and Sunday median prices drop by ~€8/MWh compared to weekdays. Even with time-of-day normalization (Step 9), pooling 14 calendar days across weekends means Monday morning z-scores are influenced by low weekend averages.
